@@ -19,7 +19,7 @@ namespace Wordle.Controls
         internal MainForm()
         {
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, 520);
+            this.Size = this.MinimumSize = this.MaximumSize = new(430, 550);
             this.MaximizeBox = false;
 
             this.inputs = new ResultInput[CYCLE];
@@ -28,7 +28,7 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 70 * i + 20,
+                    Top = 70 * i + 40,
                     Left = 20,
                     Parent = this,
                 };
@@ -38,8 +38,8 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = 440,
-                Left = 260,
+                Top = 460,
+                Left = 270,
                 Size = new(60, 30),
                 Parent = this,
             };
@@ -48,12 +48,49 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = 440,
+                Top = 460,
                 Left = 340,
                 Size = new(60, 30),
                 Parent = this,
             };
             close.Click += (sender, e) => Close();
+
+            #region menu
+
+            var ms = new MenuStrip()
+            {
+                Parent = this,
+            };
+
+            var file = new ToolStripMenuItem()
+            {
+                Text = "&File",
+            };
+            ms.Items.Add(file);
+
+            var exit = new ToolStripMenuItem()
+            {
+                Text = "E&xit",
+                ShortcutKeys = Keys.Alt | Keys.F4,
+            };
+            exit.Click += (sender, e) => Close();
+            file.DropDownItems.Add(exit);
+
+            var tool = new ToolStripMenuItem()
+            {
+                Text = "&Tool",
+            };
+            ms.Items.Add(tool);
+
+            var regex = new ToolStripMenuItem()
+            {
+                Text = "&Regex",
+                ShortcutKeys = Keys.Control | Keys.F,
+            };
+            regex.Click += (sender, e) => new RegexForm().Show();
+            tool.DropDownItems.Add(regex);
+
+            #endregion menu
 
             Reset();
         } // ctor ()

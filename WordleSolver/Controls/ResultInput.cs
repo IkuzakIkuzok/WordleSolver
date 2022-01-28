@@ -88,7 +88,8 @@ namespace Wordle.Controls
 
         internal void SetAsFirst()
         {
-            this.Words = new[] { "saved", "scale", "shade", "shake", "slate", "snake", "stale" };
+            //this.Words = new[] { "saved", "scale", "shade", "shake", "slate", "snake", "stale" };
+            this.Words = new[] { "cares", "tares", "pares", "mares" };
             this.Enabled = true;
             this.candidates.SelectedIndex = xorShift.NextInt32(0, this.words.Length);
             this.submit.Enabled = true;
