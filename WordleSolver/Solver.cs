@@ -48,6 +48,7 @@ namespace Wordle
             CandidatesCount = words.Count;
             SealedCount = 0;
             unsealed = Enumerable.Range(0, Word.LENGTH);
+            CandidatesUpdated?.Invoke(null, EventArgs.Empty);
         } // internal static void Reset ()
 
         internal static IEnumerable<KeyValuePair<Word, int>> Regex(string pattern, bool inheritFilters = false)
