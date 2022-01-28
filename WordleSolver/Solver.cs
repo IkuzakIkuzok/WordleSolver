@@ -94,13 +94,15 @@ namespace Wordle
 
         internal static IEnumerable<KeyValuePair<Word, float>> NormalizePriorities(this IEnumerable<KeyValuePair<Word, int>> words)
         {
+            if (!words.Any()) return Enumerable.Empty<KeyValuePair<Word, float>>();
+
             var vals = words.Select(kv => kv.Value);
             var min = vals.Min();
             var max = vals.Max();
             var range = max - min;
 
             return from item in words
-                   select new KeyValuePair<Word, float>(item.Key, (float)(item.Value - min) / range * 100);
+                   select new KeyValuePair<Word, float>(item.Key, min != max ? (float)(item.Value - min) / range * 100 : 100f);
         } // private static IEnumerable<KeyValuePair<Word, float>> NormalizePriorities (this IEnumerable<KeyValuePair<Word, int>>)
     } // internal static class Solver
 } // namespace Wordle
