@@ -2,7 +2,6 @@
 // (c) 2021 Kazuki KOHZUKI
 
 using System.Collections.Generic;
-using System.Linq;
 using static System.Diagnostics.Debug;
 
 namespace Wordle
