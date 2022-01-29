@@ -53,6 +53,7 @@ namespace Wordle.Controls
                 Left = 20,
                 Width = 80,
                 DropDownStyle = ComboBoxStyle.DropDownList,
+                TabStop = false,
                 Parent = this,
             };
             this.candidates.SelectedIndexChanged += (sender, e)

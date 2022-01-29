@@ -45,6 +45,28 @@ namespace Wordle.Controls
             BeginInvoke(new Action(() => Select(0, 0)));
         } // override protected void OnDropDownClosed (EventArgs)
 
+        override protected void OnKeyDown(KeyEventArgs e)
+        {
+            var v = e.KeyCode switch
+            {
+                Keys.D1 => 1,
+                Keys.D2 => 2,
+                Keys.D3 => 3,
+                Keys.NumPad1 => 1,
+                Keys.NumPad2 => 2,
+                Keys.NumPad3 => 3,
+                _ => 0,
+            } - 1;
+            e.Handled = v >= 0;
+            if (v >= 0)
+            {
+                this.SelectedIndex = v;
+                this.Parent.Parent.SelectNextControl(this, true, true, true, true);
+            }
+
+            base.OnKeyDown(e);
+        } // override protected void OnKeyDown (KeyEventArgs)
+
         internal void Seal()
         {
             this.Enabled = false;

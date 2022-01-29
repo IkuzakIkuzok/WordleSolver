@@ -37,6 +37,8 @@ namespace Wordle.Controls
         {
             foreach (var box in this.boxes)
                 box.Enabled = this.Enabled;
+            if (this.Enabled)
+                this.boxes[0].Select();
             base.OnEnabledChanged(e);
         } // override protected void OnEnabledChanged (EventArgs)
 
