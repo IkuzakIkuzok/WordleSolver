@@ -90,6 +90,9 @@ namespace Wordle
                 scores.Add(word, s);
             }
 
+            foreach (var word in scores.Keys)
+                scores[word] *= word.Distinct().Count();
+
             return scores;
         } // private static IEnumerable<KeyValuePair<Word, int>> GetPriorities (this IEnumerable<Word>)
 
