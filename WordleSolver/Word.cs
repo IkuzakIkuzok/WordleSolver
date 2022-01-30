@@ -60,6 +60,16 @@ namespace Wordle
             }
         } // internal void ApplyFilter (Filter)
 
+        internal ResultColors GetResults(string pattern)
+        {
+            var res = new ResultColor[5];
+
+            foreach ((var i, var c) in pattern.Enumerate())
+                res[i] = (ResultColor)((this.word.Contains(c) ? 1 : 0) + (this.word[i] == c ? 1 : 0));
+
+            return res;
+        } // internal ResultColors GetResults (string)
+
         override public string ToString()
             => this.word;
 
@@ -72,7 +82,7 @@ namespace Wordle
         public static explicit operator Word(string word)
             => new(word);
 
-        public static explicit operator string(Word word)
+        public static implicit operator string(Word word)
             => word.word;
     } // internal sealed class Word : IEnumerable<char>
 } // namespace Wordle

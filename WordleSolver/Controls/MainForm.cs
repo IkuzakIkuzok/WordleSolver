@@ -13,14 +13,30 @@ namespace Wordle.Controls
     {
         private const int CYCLE = 6;
 
+        private readonly CheckBox cb_entropy;
         private readonly ResultInput[] inputs;
         private int round = 0;
 
         internal MainForm()
         {
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, 550);
+            this.Size = this.MinimumSize = this.MaximumSize = new(430, 580);
             this.MaximizeBox = false;
+
+            this.cb_entropy = new()
+            {
+                Text = "Use entropy instead of simplified score",
+                Top = 40,
+                Left = 20,
+                Width = 300,
+                Parent = this,
+            };
+            this.cb_entropy.CheckedChanged += (sender, e) =>
+            {
+                Solver.UseEntropy = this.cb_entropy.Checked;
+                if (this.round > 0)
+                    UpdateRound();
+            };
 
             this.inputs = new ResultInput[CYCLE];
             for (var i = 0; i < CYCLE; i++)
@@ -28,7 +44,7 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 70 * i + 40,
+                    Top = 70 * i + 70,
                     Left = 20,
                     Parent = this,
                 };
@@ -38,7 +54,7 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = 460,
+                Top = 490,
                 Left = 270,
                 Size = new(60, 30),
                 Parent = this,
@@ -48,7 +64,7 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = 460,
+                Top = 490,
                 Left = 340,
                 Size = new(60, 30),
                 Parent = this,
@@ -119,16 +135,21 @@ namespace Wordle.Controls
             var filter = input.Filter;
             Solver.ApplyFilter(filter);
 
+            UpdateRound();
+            
+            var indices = filter.CorrectIndices;
+            for (var i = this.round; i < CYCLE; i++)
+                this.inputs[i].Seal(indices);
+        } // private void MoveNext (object, EventArgs)
+
+        private void UpdateRound()
+        {
             this.inputs[this.round].Enabled = true;
             var candidates = Solver.Candidates.Select(w => (string)w).ToArray();
             this.inputs[this.round].Words = candidates;
 
-            var indices = filter.CorrectIndices;
-            for (var i = this.round; i < CYCLE; i++)
-                this.inputs[i].Seal(indices);
-
             if (candidates.Length <= 1)
                 this.inputs[this.round].SetAsLast();
-        } // private void MoveNext (object, EventArgs)
+        } // private void UpdateRound ()
     } // internal sealed class MainForm : Form
 } // namespace Wordle.Controls

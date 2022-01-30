@@ -2,14 +2,13 @@
 // (c) 2021 Kazuki KOHZUKI
 
 using System.Collections.Generic;
-using static System.Diagnostics.Debug;
 
 namespace Wordle
 {
     internal sealed class Filter
     {
         internal string Word { get; }
-        internal ResultColor[] Colors { get; }
+        internal ResultColors Colors { get; }
 
         internal IEnumerable<CharResult> CorrectChars
         {
@@ -59,12 +58,10 @@ namespace Wordle
             }
         }
 
-        internal Filter(string word, ResultColor[] colors)
+        internal Filter(string word, ResultColors colors)
         {
-            Assert(colors.Length == Wordle.Word.LENGTH);
-
             this.Word = word.ToLower();
             this.Colors = colors;
-        } // ctor (string, ResultColor[])
+        } // ctor (string, ResultColors)
     } // internal sealed class Filter
 } // namespace Wordle

@@ -72,18 +72,36 @@ namespace Wordle.Controls
             };
 
             Solver.CandidatesUpdated += UpdateList;
+            Solver.AlgorithmChanged += UpdateOnAlgorithmChanged;
+
+            FormClosed += UnregisterEventHandlers;
         } // ctor ()
+
+        private void UnregisterEventHandlers(object sender, EventArgs e)
+        {
+            Solver.CandidatesUpdated -= UpdateList;
+            Solver.AlgorithmChanged -= UpdateOnAlgorithmChanged;
+        } // private void UnregisterEventHandlers (object, EventArgs)
 
         private void UpdateList(object sender, EventArgs e)
         {
             if (sender == null && !this.cb_inherit.Checked) return;
+            UpdateList();
+        } // private void UpdateList (object, EventArgs)
 
+        private void UpdateOnAlgorithmChanged(object sender, EventArgs e)
+            => UpdateList();
+
+        private void UpdateList()
+        {
             using var _ = new ControlDrawingSuspender(this);
-            var words = Solver.Regex(this.tb_pattern.Text, this.cb_inherit.Checked).NormalizePriorities();
+            var words = Solver.Regex(this.tb_pattern.Text, this.cb_inherit.Checked);
+            if (!Solver.UseEntropy)
+                words = words.NormalizePriorities();
             this.results.Rows.Clear();
             foreach (var word in words)
                 this.results.Rows.Add(word.Key, $"{word.Value:F2}");
             this.lb_count.Text = $"{words.Count()} word(s)";
-        } // private void UpdateList (object, EventArgs)
+        } // private void UpdateList ()
     } // internal sealed class RegexForm : Form
 } // namespace Wordle.Controls

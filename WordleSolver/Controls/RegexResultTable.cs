@@ -37,7 +37,7 @@ namespace Wordle.Controls
                 Width = 120,
             };
             priority.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            this.Columns.Add(priority);
+            this.Columns.Add(priority); // 1
         } // ctor ()
 
         override protected void OnSortCompare(DataGridViewSortCompareEventArgs e)
