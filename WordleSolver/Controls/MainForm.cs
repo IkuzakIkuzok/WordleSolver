@@ -84,6 +84,16 @@ namespace Wordle.Controls
             };
             ms.Items.Add(file);
 
+            var openGame = new ToolStripMenuItem()
+            {
+                Text = "&Open game",
+                ShortcutKeys = Keys.Control | Keys.O,
+            };
+            openGame.Click += (sender, e) => Kernel.OpenBrowser(Kernel.GameUrl);
+            file.DropDownItems.Add(openGame);
+
+            file.DropDownItems.Add(new ToolStripSeparator());
+
             var exit = new ToolStripMenuItem()
             {
                 Text = "E&xit",
@@ -105,6 +115,19 @@ namespace Wordle.Controls
             };
             regex.Click += (sender, e) => new RegexForm().Show();
             tool.DropDownItems.Add(regex);
+
+            var help = new ToolStripMenuItem()
+            {
+                Text = "&Help",
+            };
+            ms.Items.Add(help);
+
+            var openGitHub = new ToolStripMenuItem()
+            {
+                Text = "Open &GitHub repository",
+            };
+            openGitHub.Click += (sender, e) => Kernel.OpenBrowser(Kernel.GitHubUrl);
+            help.DropDownItems.Add(openGitHub);
 
             #endregion menu
 
