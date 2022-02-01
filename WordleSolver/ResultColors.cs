@@ -14,6 +14,8 @@ namespace Wordle
         internal static int Patterns = (int)Math.Pow(3, Word.LENGTH);
         internal static int Perfect = Patterns - 1;
 
+        private static readonly string[] colorStrings = new[] { "⬜", "🟨", "🟩" };
+
         private readonly ResultColor[] colors;
 
         internal ResultColor this[int index]
@@ -37,6 +39,9 @@ namespace Wordle
 
             return hash;
         } // override public int GetHashCode ()
+
+        override public string ToString()
+            => string.Join("", this.colors.Select(c => colorStrings[(int)c]));
 
         public IEnumerator<ResultColor> GetEnumerator()
             => ((IEnumerable<ResultColor>)this.colors).GetEnumerator();

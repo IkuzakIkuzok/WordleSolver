@@ -33,6 +33,11 @@ namespace Wordle.Controls
             };
             this.tb_word.TextChanged += (sender, e)
                 => this.ok.Enabled = this.tb_word.TextLength == Word.LENGTH && Solver.Words.Contains((Word)this.tb_word.Text);
+            this.tb_word.KeyDown += (sender, e) =>
+            {
+                if (e.Control && e.KeyCode == Keys.A)
+                    this.tb_word.SelectAll();
+            };
 
             this.cancel = new()
             {

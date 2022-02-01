@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Wordle.Controls
@@ -17,6 +18,7 @@ namespace Wordle.Controls
         private readonly GroupBox gb_mode;
         private readonly ResultInput[] inputs;
         private int round = 0;
+        private bool complete = false;
 
         internal MainForm()
         {
@@ -103,6 +105,14 @@ namespace Wordle.Controls
             openGame.Click += (sender, e) => Kernel.OpenBrowser(Kernel.GameUrl);
             file.DropDownItems.Add(openGame);
 
+            var share = new ToolStripMenuItem()
+            {
+                Text = "Copy result",
+                ShortcutKeys = Keys.Control | Keys.C,
+            };
+            share.Click += CopyResult;
+            file.DropDownItems.Add(share);
+
             file.DropDownItems.Add(new ToolStripSeparator());
 
             var exit = new ToolStripMenuItem()
@@ -169,6 +179,7 @@ namespace Wordle.Controls
         internal void Reset()
         {
             this.round = 0;
+            this.complete = false;
             Solver.Reset();
             foreach (var input in this.inputs)
             {
@@ -182,6 +193,8 @@ namespace Wordle.Controls
         {
             if (sender is not ResultInput input) return;
             this.round += 1;
+            this.complete = this.inputs[this.round - 1].Filter.Colors.GetHashCode() == ResultColors.Perfect;
+            if (this.complete) return;
             if (this.round >= CYCLE) return;
 
             var filter = input.Filter;
@@ -197,6 +210,7 @@ namespace Wordle.Controls
 
         private void UpdateRound()
         {
+            if (this.complete) return;
             if (this.round >= CYCLE) return;
             this.inputs[this.round].Enabled = true;
             var candidates = Solver.Candidates.Select(w => (string)w).ToArray();
@@ -205,6 +219,21 @@ namespace Wordle.Controls
             if (candidates.Length <= 1)
                 this.inputs[this.round].SetAsLast();
         } // private void UpdateRound ()
+
+        private void CopyResult(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var input in this.inputs)
+            {
+                if (input.SelectedWord == null) break;
+                sb.AppendLine(input.Filter.Colors.ToString());
+            }
+
+            var text = sb.ToString();
+            if (string.IsNullOrEmpty(text)) return;
+            Clipboard.SetText(text);
+        } // private void CopyResult (object, EventArgs)
 
         private void Simulate(object sender, EventArgs e)
         {
@@ -220,7 +249,12 @@ namespace Wordle.Controls
                 if (dr != DialogResult.OK) return;
             }
 
-            var form = new SimulateWordForm();
+            var form = new SimulateWordForm()
+            {
+                StartPosition = FormStartPosition.Manual,
+            };
+            form.Top = this.Top + (this.Height - form.Height) / 2;
+            form.Left = this.Left + (this.Width - form.Width) / 2;
             form.ShowDialog();
             var w = form.SimulateWord;
             if (w == null) return;

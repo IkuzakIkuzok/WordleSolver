@@ -120,7 +120,7 @@ namespace Wordle
             var cnts = new Dictionary<char, int>[Word.LENGTH];
             for (var i = 0; i < Word.LENGTH; i++)
             {
-                cnts[i] = new(26);
+                cnts[i] = new(Word.ALPHABETS.Length);
                 foreach (var c in Word.ALPHABETS)
                     cnts[i][c] = 0;
             }

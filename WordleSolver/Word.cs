@@ -65,7 +65,7 @@ namespace Wordle
         {
             var res = new ResultColor[5];
 
-            var corrects = new Dictionary<char, int>(26);
+            var corrects = new Dictionary<char, int>(ALPHABETS.Length);
             foreach (var c in ALPHABETS)
                 corrects[c] = 0;
             var sb_remain = new StringBuilder();
