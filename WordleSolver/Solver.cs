@@ -71,11 +71,11 @@ namespace Wordle
         {
             succeeded = true;
 
+            var words = Solver.words.Where(w => !inheritFilters | w.IsValid);
             try
             {
                 var re = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
-                var words = Solver.words.Where(w => !inheritFilters | w.IsValid)
-                        　　　          .Where(s => re.IsMatch(s));
+                words = words.Where(s => re.IsMatch(s));
             }
             catch
             {
