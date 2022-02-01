@@ -20,8 +20,10 @@ namespace Wordle.Controls
 
         internal MainForm()
         {
+            const int TOP_OFFSET = 170;
+
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, 680);
+            this.Size = this.MinimumSize = this.MaximumSize = new(430, TOP_OFFSET + 510);
             this.MaximizeBox = false;
 
             this.gb_mode = new()
@@ -53,7 +55,7 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 70 * i + 170,
+                    Top = 70 * i + TOP_OFFSET,
                     Left = 20,
                     Parent = this,
                 };
@@ -63,7 +65,7 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = 590,
+                Top = TOP_OFFSET + 420,
                 Left = 270,
                 Size = new(60, 30),
                 Parent = this,
@@ -73,7 +75,7 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = 590,
+                Top = TOP_OFFSET + 420,
                 Left = 340,
                 Size = new(60, 30),
                 Parent = this,

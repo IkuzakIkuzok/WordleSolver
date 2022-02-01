@@ -35,9 +35,9 @@ namespace Wordle
             }
         }
 
-        internal static bool UseEntropy => SolverMode == SolverMode.UseEntropy;
+        internal static bool UseEntropy => (SolverMode & SolverMode.UseEntropy) == SolverMode.UseEntropy;
 
-        internal static bool HardMode => (SolverMode | SolverMode.HardMode) == SolverMode.HardMode;
+        internal static bool HardMode => (SolverMode & SolverMode.NonHardMode) != SolverMode.NonHardMode;
 
         internal static IEnumerable<Word> Candidates
         {
