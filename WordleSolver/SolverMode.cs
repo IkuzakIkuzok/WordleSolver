@@ -16,7 +16,7 @@ namespace Wordle
         [Description("Non-hard mode, use simplified score")]
         NonHardMode = 0x10,
 
-        /*[Description("Non-hard mode, use entropy")]
-        NonHardUseEntropy = 0x11,*/
+        [Description("Non-hard mode, use weighted entropy")]
+        NonHardUseEntropy = 0x11,
     } // internal enum SolverMode
 } // namespace Wordle

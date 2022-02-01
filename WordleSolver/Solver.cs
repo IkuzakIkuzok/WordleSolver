@@ -113,6 +113,7 @@ namespace Wordle
 
         private static IEnumerable<Word> OrderWords(this IEnumerable<Word> words)
             => scoresGetter(words).OrderByDescending(kv => kv.Value)
+                                  .ToList()
                                   .Select(kv => kv.Key);
 
         private static WordsData GetPriorities(this IEnumerable<Word> words)
@@ -182,8 +183,20 @@ namespace Wordle
         } // private static WordsData NormalizePriorities (this WordsData)
 
         internal static WordsData CalculateEntropies(this IEnumerable<Word> words)
-            => words.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)
-                    .Select(w => new WordData(w, w.CalculateEntropy(words)));
+        {
+            if (HardMode)
+                return words.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)
+                            .Select(w => new WordData(w, w.CalculateEntropy(words)));
+            else
+            {
+                const double WEIGHT = 1;
+                var entropies = Solver.words.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)
+                                            .Select(w => new WordData(w, w.CalculateEntropy(words)))
+                                            .ToDictionary(x => x.Key, x => x.Value);
+                var weights = words.GetPriorities();
+                return weights.Select(w => new WordData(w.Key, w.Value * WEIGHT / 100 / WEIGHT * entropies[w.Key]));
+            }
+        }
 
         internal static double CalculateEntropy(this Word word, bool inheritFilters = false)
         {

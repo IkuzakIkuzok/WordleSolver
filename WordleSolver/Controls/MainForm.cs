@@ -22,7 +22,7 @@ namespace Wordle.Controls
 
         internal MainForm()
         {
-            const int TOP_OFFSET = 170;
+            const int TOP_OFFSET = 200;
 
             this.Text = "WordleSolver";
             this.Size = this.MinimumSize = this.MaximumSize = new(430, TOP_OFFSET + 510);
@@ -33,7 +33,7 @@ namespace Wordle.Controls
                 Text = "Solver mode",
                 Top = 40,
                 Left = 20,
-                Size = new(300, 115),
+                Size = new(380, TOP_OFFSET - 55),
                 Parent = this,
             };
             foreach ((var i, var mode) in ((IEnumerable<SolverMode>)Enum.GetValues(typeof(SolverMode))).Enumerate())
