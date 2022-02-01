@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,30 +14,38 @@ namespace Wordle.Controls
     {
         private const int CYCLE = 6;
 
-        private readonly CheckBox cb_entropy;
+        private readonly GroupBox gb_mode;
         private readonly ResultInput[] inputs;
         private int round = 0;
 
         internal MainForm()
         {
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, 580);
+            this.Size = this.MinimumSize = this.MaximumSize = new(430, 680);
             this.MaximizeBox = false;
 
-            this.cb_entropy = new()
+            this.gb_mode = new()
             {
-                Text = "Use entropy instead of simplified score",
+                Text = "Solver mode",
                 Top = 40,
                 Left = 20,
-                Width = 300,
+                Size = new(300, 115),
                 Parent = this,
             };
-            this.cb_entropy.CheckedChanged += (sender, e) =>
+            foreach ((var i, var mode) in ((IEnumerable<SolverMode>)Enum.GetValues(typeof(SolverMode))).Enumerate())
             {
-                Solver.UseEntropy = this.cb_entropy.Checked;
-                if (this.round > 0)
-                    UpdateRound();
-            };
+                var rb = new RadioButton()
+                {
+                    Text = mode.GetDescription(),
+                    Width = 250,
+                    Top = 20 + 30 * i,
+                    Left = 15,
+                    Checked = i == 0,
+                    Tag = mode,
+                    Parent = this.gb_mode,
+                };
+                rb.CheckedChanged += ChangeSolverMode;
+            }
 
             this.inputs = new ResultInput[CYCLE];
             for (var i = 0; i < CYCLE; i++)
@@ -44,7 +53,7 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 70 * i + 70,
+                    Top = 70 * i + 170,
                     Left = 20,
                     Parent = this,
                 };
@@ -54,7 +63,7 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = 490,
+                Top = 590,
                 Left = 270,
                 Size = new(60, 30),
                 Parent = this,
@@ -64,7 +73,7 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = 490,
+                Top = 590,
                 Left = 340,
                 Size = new(60, 30),
                 Parent = this,
@@ -134,6 +143,16 @@ namespace Wordle.Controls
             Reset();
         } // ctor ()
 
+        private void ChangeSolverMode(object sender, EventArgs e)
+        {
+            Solver.SolverMode = (SolverMode)this.gb_mode.Controls
+                                                        .OfType<RadioButton>()
+                                                        .FirstOrDefault(rb => rb.Checked)
+                                                        .Tag;
+            if (this.round > 0)
+                UpdateRound();
+        } // private void ChangeSolverMode (object, EventArgs)
+
         private void Reset(object sender, EventArgs e)
             => Reset();
 
@@ -159,7 +178,8 @@ namespace Wordle.Controls
             Solver.ApplyFilter(filter);
 
             UpdateRound();
-            
+
+            if (!Solver.HardMode) return;
             var indices = filter.CorrectIndices;
             for (var i = this.round; i < CYCLE; i++)
                 this.inputs[i].Seal(indices);

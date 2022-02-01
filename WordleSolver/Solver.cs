@@ -15,28 +15,36 @@ namespace Wordle
     {
         private static readonly Words words = new();
         private static IEnumerable<int> unsealed;
-        private static bool useEntropy = false;
+        private static HashSet<char> wrongs;
+        private static SolverMode mode = SolverMode.HardMode;
         private static Func<IEnumerable<Word>, WordsData> scoresGetter = GetPriorities;
 
+        internal static bool fireEvent = true;
         internal static event EventHandler CandidatesUpdated;
         internal static event EventHandler AlgorithmChanged;
 
-        internal static bool UseEntropy
+        internal static SolverMode SolverMode
         {
-            get => useEntropy;
+            get => mode;
             set
             {
-                scoresGetter = (useEntropy = value) ? CalculateEntropies : GetPriorities;
-                AlgorithmChanged?.Invoke(null, EventArgs.Empty);
+                mode = value;
+                scoresGetter = ((mode & SolverMode.UseEntropy) == SolverMode.UseEntropy) ? CalculateEntropies : GetPriorities;
+                if (fireEvent)
+                    AlgorithmChanged?.Invoke(null, EventArgs.Empty);
             }
         }
+
+        internal static bool UseEntropy => SolverMode == SolverMode.UseEntropy;
+
+        internal static bool HardMode => (SolverMode | SolverMode.HardMode) == SolverMode.HardMode;
 
         internal static IEnumerable<Word> Candidates
         {
             get
             {
                 if (CandidatesCount <= 2) return words.ValidWords;
-                if (unsealed.Count() == 1) return words.ValidWords;
+                if (HardMode && unsealed.Count() == 1) return words.ValidWords;
 
                 return words.ValidWords.OrderWords();
             }
@@ -56,6 +64,8 @@ namespace Wordle
             CandidatesUpdated?.Invoke(null, EventArgs.Empty);
             SealedCount = filter.CorrectIndices.Count();
             unsealed = unsealed.Except(filter.CorrectIndices);
+            foreach (var c in filter.WrongChars)
+                wrongs.Add(c);
         } // internal static void ApplyFilter (Filter)
 
         internal static void Reset()
@@ -64,26 +74,39 @@ namespace Wordle
             CandidatesCount = words.Count;
             SealedCount = 0;
             unsealed = Enumerable.Range(0, Word.LENGTH);
+            wrongs = new();
             CandidatesUpdated?.Invoke(null, EventArgs.Empty);
         } // internal static void Reset ()
 
         internal static WordsData Regex(string pattern, out bool succeeded, bool inheritFilters = false)
         {
-            succeeded = true;
-
-            var words = Solver.words.Where(w => !inheritFilters | w.IsValid);
+            var oldMode = SolverMode;
+            fireEvent = false;
+            SolverMode &= SolverMode.UseEntropy;
             try
             {
-                var re = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
-                words = words.Where(s => re.IsMatch(s));
-            }
-            catch
-            {
-                succeeded = false;
-                return Enumerable.Empty<WordData>();
-            }
+                succeeded = true;
 
-            return scoresGetter(words).OrderByDescending(kv => kv.Value);
+                var words = Solver.words.Where(w => !inheritFilters | w.IsValid);
+                try
+                {
+                    var re = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
+                    words = words.Where(s => re.IsMatch(s));
+                }
+                catch
+                {
+                    succeeded = false;
+                    return Enumerable.Empty<WordData>();
+                }
+
+                return scoresGetter(words).OrderByDescending(kv => kv.Value);
+            }
+            finally
+            {
+                SolverMode = oldMode;
+                fireEvent = true;
+            }
+            
         } // internal static WordsData Regex (string, out bool, [bool])
 
         private static IEnumerable<Word> OrderWords(this IEnumerable<Word> words)
@@ -100,20 +123,42 @@ namespace Wordle
                     cnts[i][c] = 0;
             }
 
-            foreach (var word in words)
+            if (HardMode)
             {
-                foreach (var index in unsealed)
-                    cnts[index][word[index]] += 1;
+                foreach (var word in words)
+                {
+                    foreach (var index in unsealed)
+                        cnts[index][word[index]] += 1;
+                }
             }
+            else
+            {
+                foreach (var word in words)
+                {
+                    foreach (var index in unsealed)
+                    {
+                        foreach (var cnt in cnts)
+                            cnt[word[index]] += 1;
+                    }
+                }
+                foreach (var c in wrongs)
+                {
+                    foreach (var cnt in cnts)
+                        cnt[c] -= 1;
+                }
+            }
+            
 
             var scores = new Dictionary<Word, double>(CandidatesCount);
-            foreach (var word in words)
+            var indices = HardMode ? unsealed : Enumerable.Range(0, Word.LENGTH);
+            foreach (var word in HardMode ? words : Solver.words)
             {
                 var s = 0;
-                foreach (var index in unsealed)
+                foreach (var index in indices)
                     s += cnts[index][word[index]];
                 scores.Add(word, s);
             }
+
 
             foreach (var word in scores.Keys)
                 scores[word] *= word.Distinct().Count();
