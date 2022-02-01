@@ -117,6 +117,14 @@ namespace Wordle.Controls
             };
             ms.Items.Add(tool);
 
+            var simulate = new ToolStripMenuItem()
+            {
+                Text = "&Simulate",
+                ShortcutKeys = Keys.Control | Keys.R,
+            };
+            simulate.Click += Simulate;
+            tool.DropDownItems.Add(simulate);
+
             var regex = new ToolStripMenuItem()
             {
                 Text = "&Regex",
@@ -187,6 +195,7 @@ namespace Wordle.Controls
 
         private void UpdateRound()
         {
+            if (this.round >= CYCLE) return;
             this.inputs[this.round].Enabled = true;
             var candidates = Solver.Candidates.Select(w => (string)w).ToArray();
             this.inputs[this.round].Words = candidates;
@@ -194,5 +203,45 @@ namespace Wordle.Controls
             if (candidates.Length <= 1)
                 this.inputs[this.round].SetAsLast();
         } // private void UpdateRound ()
+
+        private void Simulate(object sender, EventArgs e)
+        {
+            if (this.round > 0)
+            {
+                var dr = MessageBox.Show(
+                    "The current prediction will be reset." +
+                    "Are you sure you want to continue?",
+                    "Simulation mode",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Exclamation
+                );
+                if (dr != DialogResult.OK) return;
+            }
+
+            var form = new SimulateWordForm();
+            form.ShowDialog();
+            var w = form.SimulateWord;
+            if (w == null) return;
+            var word = (Word)w;
+
+            using var _ = new ControlDrawingSuspender(this);
+            Reset();
+
+            ResultInput input = null;
+            ResultColors res;
+            while (Solver.CandidatesCount > 1)
+            {
+                input = this.inputs[this.round];
+                res = word.GetResults(input.SelectedWord.ToLower());
+                input.SetResult(res);
+
+                if (this.round >= CYCLE) return;
+                if (res.GetHashCode() == ResultColors.Perfect) return;
+            }
+
+            input = this.inputs[this.round];
+            res = word.GetResults(input.SelectedWord.ToLower());
+            input.SetResult(res);
+        } // private void Simulate (object, EventArgs)
     } // internal sealed class MainForm : Form
 } // namespace Wordle.Controls

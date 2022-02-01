@@ -40,8 +40,11 @@ namespace Wordle.Controls
             }
         }
 
+        internal string SelectedWord
+            => (string)this.candidates.SelectedItem;
+
         internal Filter Filter
-            => new((string)this.candidates.SelectedItem, this.results.Colors);
+            => new(this.SelectedWord, this.results.Colors);
 
         internal ResultInput()
         {
@@ -114,5 +117,11 @@ namespace Wordle.Controls
             this.IsSubmitted = true;
             Submitted?.Invoke(this, e);
         } // private void Submit (object, EventArgs)
+
+        internal void SetResult(ResultColors colors)
+        {
+            this.results.Colors = colors;
+            this.submit.PerformClick();
+        } // internal void SetResult (ResultColors)
     } // internal sealed class ResultInput : GroupBox
 } // namespace Wordle.Controls

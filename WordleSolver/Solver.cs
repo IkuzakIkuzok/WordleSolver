@@ -50,6 +50,8 @@ namespace Wordle
             }
         }
 
+        internal static IEnumerable<Word> Words => words;
+
         internal static int CandidatesCount { get; private set; } = words.Count;
         internal static int SealedCount { get; private set; } = 0;
 

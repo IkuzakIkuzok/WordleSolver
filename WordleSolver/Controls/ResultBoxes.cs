@@ -14,8 +14,15 @@ namespace Wordle.Controls
     {
         private readonly ResultBox[] boxes;
 
-        internal ResultColor[] Colors
-            => this.boxes.Select(box => box.SelectedResult).ToArray();
+        internal ResultColors Colors
+        {
+            get => this.boxes.Select(box => box.SelectedResult).ToArray();
+            set
+            {
+                foreach ((var box, var res) in (this.boxes, value).Zip())
+                    box.SelectedIndex = (int)res;
+            }
+        }
 
         internal ResultBoxes()
         {

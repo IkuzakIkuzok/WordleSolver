@@ -12,6 +12,7 @@ namespace Wordle
     internal sealed class ResultColors : IEnumerable<ResultColor>
     {
         internal static int Patterns = (int)Math.Pow(3, Word.LENGTH);
+        internal static int Perfect = Patterns - 1;
 
         private readonly ResultColor[] colors;
 
