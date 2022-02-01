@@ -67,13 +67,24 @@ namespace Wordle
             CandidatesUpdated?.Invoke(null, EventArgs.Empty);
         } // internal static void Reset ()
 
-        internal static WordsData Regex(string pattern, bool inheritFilters = false)
+        internal static WordsData Regex(string pattern, out bool succeeded, bool inheritFilters = false)
         {
-            var re = new Regex(pattern, RegexOptions.IgnoreCase);
-            var words = Solver.words.Where(w => !inheritFilters | w.IsValid)
-                              .Where(s => re.IsMatch(s));
+            succeeded = true;
+
+            try
+            {
+                var re = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
+                var words = Solver.words.Where(w => !inheritFilters | w.IsValid)
+                        　　　          .Where(s => re.IsMatch(s));
+            }
+            catch
+            {
+                succeeded = false;
+                return Enumerable.Empty<WordData>();
+            }
+
             return scoresGetter(words).OrderByDescending(kv => kv.Value);
-        } // internal static WordsData Regex (string, [bool])
+        } // internal static WordsData Regex (string, out bool, [bool])
 
         private static IEnumerable<Word> OrderWords(this IEnumerable<Word> words)
             => scoresGetter(words).OrderByDescending(kv => kv.Value)

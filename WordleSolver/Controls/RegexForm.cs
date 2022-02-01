@@ -95,13 +95,17 @@ namespace Wordle.Controls
         private void UpdateList()
         {
             using var _ = new ControlDrawingSuspender(this);
-            var words = Solver.Regex(this.tb_pattern.Text, this.cb_inherit.Checked);
-            if (!Solver.UseEntropy)
-                words = words.NormalizePriorities();
             this.results.Rows.Clear();
+
+            var words = Solver.Regex(this.tb_pattern.Text, out var succeeded, this.cb_inherit.Checked);
+            this.tb_pattern.ForeColor = succeeded ? Color.Black : Color.Red;
+            this.lb_count.Text = succeeded ? $"{words.Count()} word(s)" : "Regex error";
+            if (!succeeded) return;
+
+            if (!Solver.UseEntropy)
+                words = words.NormalizePriorities();      
             foreach (var word in words)
                 this.results.Rows.Add(word.Key, $"{word.Value:F2}");
-            this.lb_count.Text = $"{words.Count()} word(s)";
         } // private void UpdateList ()
     } // internal sealed class RegexForm : Form
 } // namespace Wordle.Controls
