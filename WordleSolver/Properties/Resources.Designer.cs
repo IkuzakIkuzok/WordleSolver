@@ -61,262 +61,166 @@ namespace Wordle.Properties {
         }
         
         /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        ///   cigar
+        ///rebut
+        ///sissy
+        ///humph
+        ///awake
+        ///blush
+        ///focal
+        ///evade
+        ///naval
+        ///serve
+        ///heath
+        ///dwarf
+        ///model
+        ///karma
+        ///stink
+        ///grade
+        ///quiet
+        ///bench
+        ///abate
+        ///feign
+        ///major
+        ///death
+        ///fresh
+        ///crust
+        ///stool
+        ///colon
+        ///abase
+        ///marry
+        ///react
+        ///batty
+        ///pride
+        ///floss
+        ///helix
+        ///croak
+        ///staff
+        ///paper
+        ///unfed
+        ///whelp
+        ///trawl
+        ///outdo
+        ///adobe
+        ///crazy
+        ///sower
+        ///repay
+        ///digit
+        ///crate
+        ///cluck
+        ///spike
+        ///mimic
+        ///pound
+        ///maxim
+        ///linen
+        ///unmet
+        ///flesh
+        ///booby
+        ///forth
+        ///first
+        ///stand
+        ///belly
+        ///ivory
+        ///seedy
+        ///print
+        ///yearn
+        ///drain
+        ///bribe
+        ///stout
+        ///panel
+        ///crass
+        ///flume
+        ///offal
+        ///agree
+        ///error
+        ///swirl
+        ///a [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        internal static byte[] a {
+        internal static string candidates {
             get {
-                object obj = ResourceManager.GetObject("a", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("candidates", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        ///   aahed
+        ///aalii
+        ///aargh
+        ///aarti
+        ///abaca
+        ///abaci
+        ///abacs
+        ///abaft
+        ///abaka
+        ///abamp
+        ///aband
+        ///abash
+        ///abask
+        ///abaya
+        ///abbas
+        ///abbed
+        ///abbes
+        ///abcee
+        ///abeam
+        ///abear
+        ///abele
+        ///abers
+        ///abets
+        ///abies
+        ///abler
+        ///ables
+        ///ablet
+        ///ablow
+        ///abmho
+        ///abohm
+        ///aboil
+        ///aboma
+        ///aboon
+        ///abord
+        ///abore
+        ///abram
+        ///abray
+        ///abrim
+        ///abrin
+        ///abris
+        ///absey
+        ///absit
+        ///abuna
+        ///abune
+        ///abuts
+        ///abuzz
+        ///abyes
+        ///abysm
+        ///acais
+        ///acari
+        ///accas
+        ///accoy
+        ///acerb
+        ///acers
+        ///aceta
+        ///achar
+        ///ached
+        ///aches
+        ///achoo
+        ///acids
+        ///acidy
+        ///acing
+        ///acini
+        ///ackee
+        ///acker
+        ///acmes
+        ///acmic
+        ///acned
+        ///acnes
+        ///acock
+        ///acold
+        ///acred
+        ///acres
+        ///a [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        internal static byte[] b {
+        internal static string valids {
             get {
-                object obj = ResourceManager.GetObject("b", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] c {
-            get {
-                object obj = ResourceManager.GetObject("c", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] d {
-            get {
-                object obj = ResourceManager.GetObject("d", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] e {
-            get {
-                object obj = ResourceManager.GetObject("e", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] f {
-            get {
-                object obj = ResourceManager.GetObject("f", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] g {
-            get {
-                object obj = ResourceManager.GetObject("g", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] h {
-            get {
-                object obj = ResourceManager.GetObject("h", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] i {
-            get {
-                object obj = ResourceManager.GetObject("i", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] j {
-            get {
-                object obj = ResourceManager.GetObject("j", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] k {
-            get {
-                object obj = ResourceManager.GetObject("k", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] l {
-            get {
-                object obj = ResourceManager.GetObject("l", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] m {
-            get {
-                object obj = ResourceManager.GetObject("m", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] n {
-            get {
-                object obj = ResourceManager.GetObject("n", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] o {
-            get {
-                object obj = ResourceManager.GetObject("o", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] p {
-            get {
-                object obj = ResourceManager.GetObject("p", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] q {
-            get {
-                object obj = ResourceManager.GetObject("q", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] r {
-            get {
-                object obj = ResourceManager.GetObject("r", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] s {
-            get {
-                object obj = ResourceManager.GetObject("s", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] t {
-            get {
-                object obj = ResourceManager.GetObject("t", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] u {
-            get {
-                object obj = ResourceManager.GetObject("u", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] v {
-            get {
-                object obj = ResourceManager.GetObject("v", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] w {
-            get {
-                object obj = ResourceManager.GetObject("w", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] x {
-            get {
-                object obj = ResourceManager.GetObject("x", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] y {
-            get {
-                object obj = ResourceManager.GetObject("y", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] z {
-            get {
-                object obj = ResourceManager.GetObject("z", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("valids", resourceCulture);
             }
         }
     }

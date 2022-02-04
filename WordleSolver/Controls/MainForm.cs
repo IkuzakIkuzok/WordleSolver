@@ -129,6 +129,13 @@ namespace Wordle.Controls
             };
             ms.Items.Add(tool);
 
+            var answer = new ToolStripMenuItem()
+            {
+                Text = "Show today's &answer",
+            };
+            answer.Click += ShowAnswer;
+            tool.DropDownItems.Add(answer);
+
             var simulate = new ToolStripMenuItem()
             {
                 Text = "&Simulate",
@@ -234,6 +241,17 @@ namespace Wordle.Controls
             if (string.IsNullOrEmpty(text)) return;
             Clipboard.SetText(text);
         } // private void CopyResult (object, EventArgs)
+
+        private void ShowAnswer(object sender, EventArgs e)
+        {
+            var today = DateTime.Now;
+            var id = Solver.GetId(today);
+            var answer = Solver.GetAnswer(id);
+            MessageBox.Show(
+                answer.ToString().ToUpper(),
+                $"Wordle {id} ({today:yyyy/MM/dd})"
+            );
+        } // private void ShowAnswer (object, EventArgs)
 
         private void Simulate(object sender, EventArgs e)
         {

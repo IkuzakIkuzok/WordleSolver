@@ -13,11 +13,14 @@ namespace Wordle
 {
     internal static class Solver
     {
-        private static readonly Words words = new();
+        private static readonly Words candidates = new(WordListType.Candidates);
+        private static readonly Words valids = new(WordListType.Valids);
         private static IEnumerable<int> unsealed;
         private static HashSet<char> wrongs;
         private static SolverMode mode = SolverMode.HardMode;
         private static Func<IEnumerable<Word>, WordsData> scoresGetter = GetPriorities;
+
+        private static readonly DateTime firstDay = new(2021, 6, 19, 0, 0, 0);
 
         internal static bool fireEvent = true;
         internal static event EventHandler CandidatesUpdated;
@@ -43,24 +46,25 @@ namespace Wordle
         {
             get
             {
-                if (CandidatesCount <= 2) return words.ValidWords;
-                if (HardMode && unsealed.Count() == 1) return words.ValidWords;
+                if (CandidatesCount <= 2) return candidates.ValidWords;
+                if (HardMode && unsealed.Count() == 1) return candidates.ValidWords;
 
-                return words.ValidWords.OrderWords();
+                return Words.Where(w => w.IsValid).OrderWords();
             }
         }
 
-        internal static IEnumerable<Word> Words => words;
+        internal static IEnumerable<Word> Words => HardMode ? candidates : candidates.Concat(valids);
 
-        internal static int CandidatesCount { get; private set; } = words.Count;
+        internal static int CandidatesCount { get; private set; } = candidates.Count;
         internal static int SealedCount { get; private set; } = 0;
 
         internal static void ApplyFilter(Filter filter)
         {
             var info = Math.Log2(CandidatesCount);
             var entropy = new Word(filter.Word).CalculateEntropy(true);
-            words.ApplyFilter(filter);
-            CandidatesCount = words.ValidWords.Count();
+            candidates.ApplyFilter(filter);
+            valids.ApplyFilter(filter);
+            CandidatesCount = candidates.ValidWords.Count();
             info -= Math.Log2(CandidatesCount);
             WriteLine($"Candidates: {CandidatesCount} word(s) (expected {entropy:f4} bits of information, got {info:f4} bits)");
             CandidatesUpdated?.Invoke(null, EventArgs.Empty);
@@ -72,15 +76,16 @@ namespace Wordle
 
         internal static void Reset()
         {
-            words.Reset();
-            CandidatesCount = words.Count;
+            candidates.Reset();
+            valids.Reset();
+            CandidatesCount = candidates.Count;
             SealedCount = 0;
             unsealed = Enumerable.Range(0, Word.LENGTH);
             wrongs = new();
             CandidatesUpdated?.Invoke(null, EventArgs.Empty);
         } // internal static void Reset ()
 
-        internal static WordsData Regex(string pattern, out bool succeeded, bool inheritFilters = false)
+        internal static WordsData Regex(string pattern, bool includeValids, out bool succeeded, bool inheritFilters = false)
         {
             var oldMode = SolverMode;
             fireEvent = false;
@@ -89,7 +94,8 @@ namespace Wordle
             {
                 succeeded = true;
 
-                var words = Solver.words.Where(w => !inheritFilters | w.IsValid);
+                var words = includeValids ? candidates.Concat(valids) : candidates;
+                words = words.Where(w => !inheritFilters | w.IsValid);
                 try
                 {
                     var re = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
@@ -154,7 +160,7 @@ namespace Wordle
 
             var scores = new Dictionary<Word, double>(CandidatesCount);
             var indices = HardMode ? unsealed : Enumerable.Range(0, Word.LENGTH);
-            foreach (var word in HardMode ? words : Solver.words)
+            foreach (var word in HardMode ? words : candidates)
             {
                 var s = 0;
                 foreach (var index in indices)
@@ -190,9 +196,9 @@ namespace Wordle
             else
             {
                 const double WEIGHT = 1;
-                var entropies = Solver.words.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)
-                                            .Select(w => new WordData(w, w.CalculateEntropy(words)))
-                                            .ToDictionary(x => x.Key, x => x.Value);
+                var entropies = candidates.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)
+                                          .Select(w => new WordData(w, w.CalculateEntropy(words)))
+                                          .ToDictionary(x => x.Key, x => x.Value);
                 var weights = words.GetPriorities();
                 return weights.Select(w => new WordData(w.Key, w.Value * WEIGHT / 100 / WEIGHT * entropies[w.Key]));
             }
@@ -200,7 +206,7 @@ namespace Wordle
 
         internal static double CalculateEntropy(this Word word, bool inheritFilters = false)
         {
-            var words = Solver.words.Where(w => !inheritFilters | w.IsValid);
+            var words = candidates.Where(w => !inheritFilters | w.IsValid);
             return word.CalculateEntropy(words);
         } // internal static double CalculateEntropy (this Word, [bool])
 
@@ -215,5 +221,11 @@ namespace Wordle
                        .Select(p => p > 0 ? -p * Math.Log2(p) : 0)
                        .Sum();
         } // internal static double CalculateEntropy (this Word, IEnumerable<Word>)
+
+        internal static int GetId(DateTime date)
+            => (date - firstDay).Days % candidates.Count;
+
+        internal static Word GetAnswer(int id)
+            => candidates[id];
     } // internal static class Solver
 } // namespace Wordle

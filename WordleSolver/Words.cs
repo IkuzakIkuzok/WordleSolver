@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Resources;
 using Wordle.Properties;
@@ -15,22 +14,18 @@ namespace Wordle
         internal IEnumerable<Word> ValidWords
             => this.Where(word => word.IsValid);
 
-        internal Words() : base()
+        internal Words(WordListType listType) : base()
         {
             var rm = new ResourceManager("Wordle.Properties.Resources", typeof(Resources).Assembly);
 
-            foreach (var c in Word.ALPHABETS)
-            {
-                var buf = (byte[])rm.GetObject(c.ToString());
-                using var ms = new MemoryStream(buf);
-                using var sr = new StreamReader(Stream.Synchronized(ms));
-                var words = sr.ReadToEnd()
-                              .Split("\n", StringSplitOptions.RemoveEmptyEntries)
-                              .Select(w => w.Trim())
-                              .Select(w => (Word)w);
-                AddRange(words);
-            }
-        } // ctor ()
+            var file = listType.ToString().ToLower();
+            var words = rm.GetObject(file)
+                          .ToString()
+                          .Split("\n", StringSplitOptions.RemoveEmptyEntries)
+                          .Select(w => w.Trim())
+                          .Select(w => (Word)w);
+            AddRange(words);
+        } // ctor (WordListType)
 
         internal void ApplyFilter(Filter filter)
         {

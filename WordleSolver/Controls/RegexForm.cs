@@ -13,14 +13,14 @@ namespace Wordle.Controls
     internal sealed class RegexForm : Form
     {
         private readonly CustomTextBox tb_pattern;
-        private readonly CheckBox cb_inherit;
+        private readonly CheckBox cb_inherit, cb_inclideValids;
         private readonly RegexResultTable results;
         private readonly Label lb_count;
 
         internal RegexForm()
         {
             this.Text = "Regex Serch";
-            this.Size = this.MinimumSize = this.MaximumSize = new(300, 500);
+            this.Size = this.MinimumSize = this.MaximumSize = new(300, 530);
             this.MaximizeBox = false;
 
             _ = new Label()
@@ -51,9 +51,19 @@ namespace Wordle.Controls
             };
             this.cb_inherit.CheckedChanged += UpdateList;
 
+            this.cb_inclideValids = new()
+            {
+                Text = "Inclide miscellaneous words",
+                Top = 80,
+                Left = 20,
+                Width = 250,
+                Parent = this,
+            };
+            this.cb_inclideValids.CheckedChanged += UpdateList;
+
             this.results = new()
             {
-                Top = 90,
+                Top = 120,
                 Left = 20,
                 Width = 240,
                 Height = 320,
@@ -64,7 +74,7 @@ namespace Wordle.Controls
             this.lb_count = new()
             {
                 Text = "-",
-                Top = 420,
+                Top = 450,
                 Left = 20,
                 Width = 240,
                 TextAlign = ContentAlignment.MiddleRight,
@@ -97,7 +107,7 @@ namespace Wordle.Controls
             using var _ = new ControlDrawingSuspender(this);
             this.results.Rows.Clear();
 
-            var words = Solver.Regex(this.tb_pattern.Text, out var succeeded, this.cb_inherit.Checked);
+            var words = Solver.Regex(this.tb_pattern.Text, this.cb_inclideValids.Checked, out var succeeded, this.cb_inherit.Checked);
             this.tb_pattern.ForeColor = succeeded ? Color.Black : Color.Red;
             this.lb_count.Text = succeeded ? $"{words.Count()} word(s)" : "Regex error";
             if (!succeeded) return;
