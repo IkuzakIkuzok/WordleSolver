@@ -231,6 +231,12 @@ namespace Wordle.Controls
         {
             var sb = new StringBuilder();
 
+            if (this.round < CYCLE && this.inputs[this.round].Filter.Word != null)
+                this.round += 1;
+            var last = this.inputs[this.round-1].Filter;
+            if (last.Colors.GetHashCode() == ResultColors.Perfect)
+                sb.AppendLine($"Wordle {Solver.GetId((Word)last.Word)} {this.round}/6\n");
+
             foreach (var input in this.inputs)
             {
                 if (input.SelectedWord == null) break;

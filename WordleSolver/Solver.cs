@@ -222,6 +222,9 @@ namespace Wordle
                        .Sum();
         } // internal static double CalculateEntropy (this Word, IEnumerable<Word>)
 
+        internal static int GetId(Word word)
+            => candidates.IndexOf(word);
+
         internal static int GetId(DateTime date)
             => (date - firstDay).Days % candidates.Count;
 
