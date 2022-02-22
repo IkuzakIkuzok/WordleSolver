@@ -22,10 +22,10 @@ namespace Wordle.Controls
 
         internal MainForm()
         {
-            const int TOP_OFFSET = 200;
+            const int TOP_OFFSET = 140;
 
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, TOP_OFFSET + 630);
+            this.Size = this.MinimumSize = this.MaximumSize = new(830, TOP_OFFSET + 360);
             this.MaximizeBox = false;
 
             this.gb_mode = new()
@@ -33,7 +33,7 @@ namespace Wordle.Controls
                 Text = "Solver mode",
                 Top = 40,
                 Left = 20,
-                Size = new(380, TOP_OFFSET - 55),
+                Size = new(770, TOP_OFFSET - 55),
                 Parent = this,
             };
             foreach ((var i, var mode) in ((IEnumerable<SolverMode>)Enum.GetValues(typeof(SolverMode))).Enumerate())
@@ -42,8 +42,8 @@ namespace Wordle.Controls
                 {
                     Text = mode.GetDescription(),
                     Width = 250,
-                    Top = 20 + 30 * i,
-                    Left = 15,
+                    Top = 20 + 30 * (i % 2),
+                    Left = 15 + 390 * (i / 2),
                     Checked = i == 0,
                     Tag = mode,
                     Parent = this.gb_mode,
@@ -57,8 +57,8 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 90 * i + TOP_OFFSET,
-                    Left = 20,
+                    Top = 90 * (i % 3) + TOP_OFFSET,
+                    Left = 20 + 390 * (i / 3),
                     Parent = this,
                 };
                 this.inputs[i].Submitted += MoveNext;
@@ -67,8 +67,8 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = TOP_OFFSET + 540,
-                Left = 270,
+                Top = TOP_OFFSET + 270,
+                Left = 660,
                 Size = new(60, 30),
                 Parent = this,
             };
@@ -77,8 +77,8 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = TOP_OFFSET + 540,
-                Left = 340,
+                Top = TOP_OFFSET + 270,
+                Left = 730,
                 Size = new(60, 30),
                 Parent = this,
             };
