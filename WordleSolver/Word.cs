@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static System.Diagnostics.Debug;
+using static System.Linq.Enumerable;
 
 namespace Wordle
 {
@@ -30,59 +31,32 @@ namespace Wordle
         internal void ApplyFilter(Filter filter)
         {
             if (!this.IsValid) return;
-
-            foreach ((var i, var c) in filter.CorrectChars)
-            {
-                if (this.word[i] == c) continue;
-                this.IsValid = false;
-                return;
-            }
-
-            foreach ((var i, var c) in filter.IncludedChars)
-            {
-                var indices = this.word.AllIndices(c).Except(filter.CorrectIndices);
-                if (!indices.Any())
-                {
-                    this.IsValid = false;
-                    return;
-                }
-
-                if (this.word[i] != c) continue;
-                this.IsValid = false;
-                return;
-            }
-
-            foreach (var c in filter.WrongChars)
-            {
-                var indices = this.word.AllIndices(c).Except(filter.CorrectIndices);
-                if (!indices.Any()) continue;
-                this.IsValid = false;
-                return;
-            }
+            var res = GetResults(filter.Word);
+            this.IsValid = res == filter.Colors;
         } // internal void ApplyFilter (Filter)
 
         internal ResultColors GetResults(string pattern)
         {
             var res = new ResultColor[5];
+            var word = this.word;
 
-            var corrects = new Dictionary<char, int>(ALPHABETS.Length);
-            foreach (var c in ALPHABETS)
-                corrects[c] = 0;
-            var sb_remain = new StringBuilder();
-            foreach ((var i, var c) in pattern.Enumerate())
+            foreach (var i in Range(0, 5))
             {
-                if (this.word[i] == c)
+                if (pattern[i] == word[i])
+                {
                     res[i] = ResultColor.Correct;
-                else
-                    sb_remain.Append(this.word[i]);
+                    word = word.Remove(i, 1).Insert(i, "*");
+                }
             }
 
-            var remain = sb_remain.ToString();
             foreach ((var i, var c) in pattern.Enumerate())
             {
-                if (res[i] == ResultColor.Correct) continue;
-                if (remain.Contains(c))
+                if (word.Contains(c) && res[i] == ResultColor.Wrong)
+                {
                     res[i] = ResultColor.Included;
+                    var index = word.IndexOf(c);
+                    word = word.Remove(index, 1).Insert(i, "*");
+                }
             }
 
             return res;

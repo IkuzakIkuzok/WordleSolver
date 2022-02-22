@@ -40,6 +40,12 @@ namespace Wordle
             return hash;
         } // override public int GetHashCode ()
 
+        public static bool operator ==(ResultColors left, ResultColors right)
+            => left.GetHashCode() == right.GetHashCode();
+
+        public static bool operator !=(ResultColors left, ResultColors right)
+            => !(left == right);
+
         override public string ToString()
             => string.Join("", this.colors.Select(c => colorStrings[(int)c]));
 
