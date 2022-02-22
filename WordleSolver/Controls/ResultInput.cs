@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -19,6 +20,7 @@ namespace Wordle.Controls
         private readonly ComboBox candidates;
         private readonly ResultBoxes results;
         private readonly Button submit;
+        private readonly Label statistics;
 
         internal event EventHandler Submitted;
 
@@ -48,7 +50,7 @@ namespace Wordle.Controls
 
         internal ResultInput()
         {
-            this.Size = new(380, 60);
+            this.Size = new(380, 80);
 
             this.candidates = new()
             {
@@ -78,6 +80,14 @@ namespace Wordle.Controls
                 Parent = this,
             };
             this.submit.Click += Submit;
+
+            this.statistics = new()
+            {
+                Top = 52,
+                Left = 20,
+                Width = 300,
+                Parent = this,
+            };
         } // ctor ()
 
         internal void Seal(IEnumerable<int> indices)
@@ -92,7 +102,7 @@ namespace Wordle.Controls
 
         internal void SetAsFirst()
         {
-            this.Words = new[] {"tares" };
+            this.Words = new[] { "tares" };
             this.Enabled = true;
             this.candidates.SelectedIndex = xorShift.NextInt32(0, this.words.Length);
             this.submit.Enabled = true;
@@ -101,11 +111,18 @@ namespace Wordle.Controls
         internal void SetAsLast()
             => this.submit.Enabled = false;
 
+        internal void SetStatisticsInfo(int before, int after, double expected)
+        {
+            var info = Math.Log2((double)before / after);
+            this.statistics.Text = $"{before} --> {after} (expected {expected:f4} bits, got {info:f4} bits)";
+        } // internal void SetStatisticsInfo (int, int)
+
         internal void Reset()
         {
             this.candidates.Items.Clear();
             this.words = null;
             this.candidates.SelectedIndex = -1;
+            this.statistics.Text = string.Empty;
             this.results.Reset();
             this.Enabled = false;
             this.IsSubmitted = false;

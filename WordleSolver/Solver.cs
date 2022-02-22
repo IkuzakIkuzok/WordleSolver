@@ -54,14 +54,16 @@ namespace Wordle
         }
 
         internal static IEnumerable<Word> Words => HardMode ? candidates : candidates.Concat(valids);
+        internal static IEnumerable<Word> CandidateWords => candidates;
 
         internal static int CandidatesCount { get; private set; } = candidates.Count;
+        internal static int AllCandidatesCount => candidates.Count;
         internal static int SealedCount { get; private set; } = 0;
 
         internal static void ApplyFilter(Filter filter)
         {
             var info = Math.Log2(CandidatesCount);
-            var entropy = new Word(filter.Word).CalculateEntropy(true);
+            var entropy = filter.ExpectedInformation;
             candidates.ApplyFilter(filter);
             valids.ApplyFilter(filter);
             CandidatesCount = candidates.ValidWords.Count();

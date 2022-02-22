@@ -32,7 +32,7 @@ namespace Wordle.Controls
                 Parent = this,
             };
             this.tb_word.TextChanged += (sender, e)
-                => this.ok.Enabled = this.tb_word.TextLength == Word.LENGTH && Solver.Words.Contains((Word)this.tb_word.Text);
+                => this.ok.Enabled = this.tb_word.TextLength == Word.LENGTH && Solver.CandidateWords.Contains((Word)this.tb_word.Text);
             this.tb_word.KeyDown += (sender, e) =>
             {
                 if (e.Control && e.KeyCode == Keys.A)

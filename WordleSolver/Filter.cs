@@ -58,6 +58,9 @@ namespace Wordle
             }
         }
 
+        internal double ExpectedInformation
+            => new Word(this.Word).CalculateEntropy(true);
+
         internal Filter(string word, ResultColors colors)
         {
             this.Word = word.ToLower();

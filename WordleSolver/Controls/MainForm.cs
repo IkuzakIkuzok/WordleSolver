@@ -25,7 +25,7 @@ namespace Wordle.Controls
             const int TOP_OFFSET = 200;
 
             this.Text = "WordleSolver";
-            this.Size = this.MinimumSize = this.MaximumSize = new(430, TOP_OFFSET + 510);
+            this.Size = this.MinimumSize = this.MaximumSize = new(430, TOP_OFFSET + 630);
             this.MaximizeBox = false;
 
             this.gb_mode = new()
@@ -57,7 +57,7 @@ namespace Wordle.Controls
                 this.inputs[i] = new()
                 {
                     Text = (i + 1).ToString(),
-                    Top = 70 * i + TOP_OFFSET,
+                    Top = 90 * i + TOP_OFFSET,
                     Left = 20,
                     Parent = this,
                 };
@@ -67,7 +67,7 @@ namespace Wordle.Controls
             var reset = new Button()
             {
                 Text = "Reset",
-                Top = TOP_OFFSET + 420,
+                Top = TOP_OFFSET + 540,
                 Left = 270,
                 Size = new(60, 30),
                 Parent = this,
@@ -77,7 +77,7 @@ namespace Wordle.Controls
             var close = new Button()
             {
                 Text = "Close",
-                Top = TOP_OFFSET + 420,
+                Top = TOP_OFFSET + 540,
                 Left = 340,
                 Size = new(60, 30),
                 Parent = this,
@@ -199,13 +199,22 @@ namespace Wordle.Controls
         private void MoveNext(object sender, EventArgs e)
         {
             if (sender is not ResultInput input) return;
-            this.round += 1;
-            this.complete = this.inputs[this.round - 1].Filter.Colors.GetHashCode() == ResultColors.Perfect;
-            if (this.complete) return;
-            if (this.round >= CYCLE) return;
-
             var filter = input.Filter;
+
+            var cnt = Solver.CandidatesCount;
+            var expected = filter.ExpectedInformation;
+            this.complete = input.Filter.Colors.GetHashCode() == ResultColors.Perfect;
+            if (this.complete)
+            {
+                input.SetStatisticsInfo(cnt, 1, expected);
+                return;
+            }
+            if (this.round > CYCLE)
+                return;
             Solver.ApplyFilter(filter);
+            input.SetStatisticsInfo(cnt, Solver.CandidatesCount, expected);
+
+            this.round += 1;
 
             UpdateRound();
 
@@ -298,6 +307,8 @@ namespace Wordle.Controls
                 if (this.round >= CYCLE) return;
                 if (res.GetHashCode() == ResultColors.Perfect) return;
             }
+
+            if (Solver.CandidatesCount <= 0) return;
 
             input = this.inputs[this.round];
             res = word.GetResults(input.SelectedWord.ToLower());
